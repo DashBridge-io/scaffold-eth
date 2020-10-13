@@ -11,16 +11,16 @@ export default function DashTestamentStorage(props) {
   const [dashDriveContents, setDashDriveContents] = useState();
   const myAttestation = useContractReader(props.readContracts, "Attestor", "attestations", [props.address], 1777);
   const [attestationContents, setAttestationContents] = useState();
-  const Dash = require("dash");
+  const Dash = require("dash"); 
 
   const clientOpts = {
     network: "evonet",
     wallet: {
-      mnemonic: "window attend cram label noble they parent bonus measure same wagon keen",
+      mnemonic: "<-- replace with wallet mnemonic -->",
     },
     apps: {
-      tutorialContract: {
-        contractId: "6MibJvnvYAHPTAfiCzp2ZQP2JALWMyNEim64PtRVD648",
+      attestorDataContract: {
+        contractId: "<-- replace with DASH data contract ID -->",
       },
     },
   };
@@ -30,14 +30,14 @@ export default function DashTestamentStorage(props) {
     const platform = client.platform;
 
     try {
-      const identity = await platform.identities.get("B2gSaMW42k6ScaZk2E1tT2Ygj7LT17oED1arVXaW4Rro");
+      const identity = await platform.identities.get("<-- replace with DASH Identity Id -->");
 
       const docProperties = {
-        message: data,
+        statement: data,
       };
 
       // Create the note document
-      const noteDocument = await platform.documents.create("tutorialContract.note", identity, docProperties);
+      const noteDocument = await platform.documents.create("attestorDataContract.attestation", identity, docProperties);
 
       console.log("doc not submitted yet " + JSON.stringify(noteDocument));
 
@@ -62,9 +62,9 @@ export default function DashTestamentStorage(props) {
       const queryOpts = {
         where: [["$id", "==", hashToGet]],
       };
-      const documents = await client.platform.documents.get("tutorialContract.note", queryOpts);
+      const documents = await client.platform.documents.get("attestorDataContract.attestation", queryOpts);
       console.log(documents[0]);
-      return documents[0].data.message;
+      return documents[0].data.statement;
     } catch (e) {
       console.error("Something went wrong:", e);
     } finally {
@@ -95,7 +95,9 @@ export default function DashTestamentStorage(props) {
   }
   const asyncGetAttestation = async () => {
     let result = await getFromDashDrive(myAttestation);
-    setAttestationContents(result.toString());
+    if (result !== undefined) {
+      setAttestationContents(result.toString());
+    }
   };
 
   useEffect(() => {
