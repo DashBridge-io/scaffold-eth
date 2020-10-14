@@ -39,8 +39,6 @@ export default function DashTestamentStorage(props) {
       // Create the note document
       const noteDocument = await platform.documents.create("attestorDataContract.attestation", identity, docProperties);
 
-      console.log("doc not submitted yet " + JSON.stringify(noteDocument));
-
       const documentBatch = {
         create: [noteDocument],
         replace: [],
@@ -63,8 +61,7 @@ export default function DashTestamentStorage(props) {
         where: [["$id", "==", hashToGet]],
       };
       const documents = await client.platform.documents.get("attestorDataContract.attestation", queryOpts);
-      console.log(documents[0]);
-      return documents[0].data.statement;
+      return documents[0] !== undefined ? documents[0].data.statement : "";
     } catch (e) {
       console.error("Something went wrong:", e);
     } finally {
@@ -81,12 +78,12 @@ export default function DashTestamentStorage(props) {
     if (dashDriveId) asyncGetFile();
   }, [dashDriveId]);
 
-  let ipfsDisplay = "";
+  let dashDriveDisplay = "";
   if (dashDriveId) {
     if (!dashDriveContents) {
-      ipfsDisplay = <Spin />;
+      dashDriveDisplay = <Spin />;
     } else {
-      ipfsDisplay = (
+      dashDriveDisplay = (
         <pre style={{ margin: 8, padding: 8, border: "1px solid #dddddd", backgroundColor: "#ededed" }}>
           {dashDriveContents}
         </pre>
@@ -94,7 +91,7 @@ export default function DashTestamentStorage(props) {
     }
   }
   const asyncGetAttestation = async () => {
-    let result = await getFromDashDrive(myAttestation);
+    const result = await getFromDashDrive(myAttestation);
     if (result !== undefined) {
       setAttestationContents(result.toString());
     }
@@ -136,17 +133,14 @@ export default function DashTestamentStorage(props) {
         shape="round"
         type="primary"
         onClick={async () => {
-          console.log("UPLOADING...");
           setSending(true);
           setDashDriveId();
           setDashDriveContents();
           const dashDocument = await uploadToDashDrive(data);
-          console.log("result: " + JSON.stringify(dashDocument));
           if (dashDocument && dashDocument.id) {
             setDashDriveId(dashDocument.id);
           }
           setSending(false);
-          console.log("RESULT:", dashDocument);
         }}
       >
         Upload to Dash Drive
@@ -159,7 +153,7 @@ export default function DashTestamentStorage(props) {
             setDashDriveId(e.target.value);
           }}
         />
-        {ipfsDisplay}
+        {dashDriveDisplay}
         <Button
           disabled={!dashDriveId}
           style={{ margin: 8 }}
@@ -167,7 +161,7 @@ export default function DashTestamentStorage(props) {
           shape="round"
           type="primary"
           onClick={async () => {
-            props.tx(props.writeContracts["Attestor"].attest(dashDriveId));
+            props.tx(props.writeContracts.Attestor.attest(dashDriveId));
           }}
         >
           Attest to this hash on Ethereum
