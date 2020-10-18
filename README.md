@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth
+# 🏗 scaffold-eth Ethereum with Dash Storage Example
 
 > is everything you need to get started building decentralized applications powered by smart contracts
 
@@ -7,7 +7,7 @@
 ## quickstart
 
 ```bash 
-git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
+git clone https://github.com/DashBridge-io/scaffold-eth.git dash-eth-example
 
 cd your-next-dapp
 ```

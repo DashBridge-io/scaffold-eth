@@ -118,7 +118,7 @@ export default function DashTestamentStorage(props) {
   }
   return (
     <div style={{ padding: 32, textAlign: "left" }}>
-      Enter a bunch of data:
+      Enter a statement you attest to:
       <TextArea
         rows={10}
         value={data}
